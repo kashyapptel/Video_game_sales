@@ -1,0 +1,104 @@
+Here we are making tables and adding data from the main table after filtering.
+ Only the data we need for analysis of all games, shooter games and sport games.
+We will also calculate minimum value, maximum value and average of critic score of all games.
+We will also determine minimum value, maximum value and average of critic score of sports games and shooter games and save it for our visusalizations
+
+Creating a new table to store Average of Crictic Score for Sport games
+create table average_criticscore_sport
+(
+Sport_Critic_Score float
+);
+
+Creating a new table to store Average of Crictic Score for Shooter games
+create table average_criticscore_shooter
+(
+Shooter_Critic_Score float
+);
+
+Filtering data to find average of critic score for only Sport genre and storing it in table created
+INSERT OVERWRITE TABLE average_criticscore_sport
+SELECT Avg(critic_score) as Sport_Critic_Score
+FROM sales_genre
+where genre LIKE "%Sport%";
+
+Filtering data to find average of critic score for only Shooter genre and storing it in table created
+INSERT OVERWRITE TABLE average_criticscore_shooter
+SELECT Avg(critic_score) as Shooter_Critic_Score
+FROM sales_genre
+where genre LIKE "%Shooter%";
+
+
+
+
+
+Part 2
+Creating a new table to store Average, Maximum and minimum values of Global sales for all games
+create table stat_globalsales_allgames
+(
+Average_global_sales float,
+Min_global_sales int,
+Max_global_sales int
+);
+
+Creating a new table to store Average, Maximum and minimum values of Global sales for Sport games
+create table stat_globalsales_sport
+(
+Average_global_sales float,
+Min_global_sales int,
+Max_global_sales int
+);
+
+Creating a new table to store Average, Maximum and minimum values of Global sales for Shooter games
+create table stat_globalsales_shooter
+(
+Average_global_sales float,
+Min_global_sales int,
+Max_global_sales int
+);
+
+Aggregating data(Average, Max & min) of global sales for all games and storing it in assigned table
+INSERT OVERWRITE TABLE stat_globalsales_allgames
+SELECT Avg(global_sales) as Average_global_sales, min(global_sales) as min_global_sales, max(global_sales) as max_global_sales
+FROM sales_genre;
+
+Aggregating data(Average, Max & min) of global sales for sport games and storing it in assigned table
+INSERT OVERWRITE TABLE stat_globalsales_sport
+SELECT Avg(global_sales) as Average_global_sales, min(global_sales) as min_global_sales, max(global_sales) as max_global_sales
+FROM sales_genre
+where genre LIKE "%Sport%";
+
+Aggregating data(Average, Max & min) of global sales for Shooter games and storing it in assigned table
+INSERT OVERWRITE TABLE stat_globalsales_shooter
+SELECT Avg(global_sales) as Average_global_sales, min(global_sales) as min_global_sales, max(global_sales) as max_global_sales
+FROM sales_genre
+where genre LIKE "%Shooter%";
+
+Part 3
+Creating table for Counting Values of Global Sales for sport games
+create table globalsales_sport_count
+(
+Global_sales int,
+Count int
+);
+
+Adding count  for global sales for sports games
+INSERT OVERWRITE TABLE globalsales_sport_count
+SELECT Global_sales, count(Global_sales) as count
+FROM sales_genre
+where genre LIKE "%Sport%"
+Group by Global_sales;
+
+Creating table for Counting Values of Global Sales for Shooter games
+create table globalsales_shooter_count
+(
+Global_sales int,
+Count int
+);
+
+Adding count  for global sales for Shooter games
+INSERT OVERWRITE TABLE globalsales_shooter_count
+SELECT Global_sales, count(Global_sales) as count
+FROM sales_genre
+where genre LIKE "%Shooter%"
+Group by Global_sales;
+

@@ -1,0 +1,55 @@
+We are going to remove unnecessary data from the table and perform some following transformations required for our analysis.
+1) Rounding global_sales to 0 decimal points
+2)Include reading having critic score greater than 0
+3)Consider only 3 columns from original data set: Genre, Global sales and Critic_score.
+
+
+Query for loading the table in to Hadoop.
+
+CREATE EXTERNAL TABLE sales
+(
+Name string,
+Platform string,
+Year_of_Release int,
+Genre string,
+Publisher string,
+NA_Sales float,
+EU_Sales float,
+JP_Sales float,
+Other_Sales float,
+Global_Sales float,
+Critic_Score int,
+Critic_Count int,
+User_Score int,
+User_Count int,
+Developer string,
+Rating string
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+STORED AS TEXTFILE LOCATION '/sales'
+TBLPROPERTIES("skip.header.line.count"="1");
+
+## Creating a new table sales_genre including requested columns
+CREATE EXTERNAL TABLE sales_genre
+(
+genre string,
+global_sales float,
+critic_score int
+);
+
+
+##Insering data from sales table with filtering and round conditions
+INSERT OVERWRITE TABLE sales_genre
+SELECT Genre, Round(Global_Sales,0), Critic_Score
+FROM sales
+WHERE critic_score > "0";
+
+## sorting data in descending order
+INSERT OVERWRITE TABLE sales_genre
+SELECT * 
+FROM sales_genre 
+ORDER BY critic_score DESC
+
+
+
